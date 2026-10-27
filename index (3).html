@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="id" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Show Akuntansi Perusahaan Dagang - Kelas 11 SMK</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        @keyframes pulse-slow {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        .animate-pulse-slow {
+            animation: pulse-slow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 text-slate-100 min-h-full flex flex-col selection:bg-indigo-500 selection:text-white">
+
+    <!-- Top Navigation / Header -->
+    <header class="bg-slate-900/80 backdrop-blur-md border-b border-slate-800 sticky top-0 z-40 px-4 py-3 shadow-lg">
+        <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
+            <div class="flex items-center space-x-3">
+                <div class="bg-indigo-600 text-white p-2.5 rounded-xl shadow-md shadow-indigo-500/20 font-bold text-xl flex items-center justify-center">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+                </div>
+                <div>
+                    <h1 class="text-lg font-bold text-white tracking-wide">Quiz Show Akuntansi Perusahaan Dagang</h1>
+                    <p class="text-xs text-indigo-300 font-medium">Jurnal Penyesuaian Kelas 11 SMK • 20 Soal Tantangan</p>
+                </div>
+            </div>
+            
+            <div id="header-stats" class="hidden items-center space-x-4 bg-slate-800/80 px-4 py-2 rounded-xl border border-slate-700/50">
+                <div class="text-xs text-slate-400">Soal <span id="current-q-num" class="font-bold text-white">1</span>/20</div>
+                <div class="h-4 w-px bg-slate-700"></div>
+                <div class="text-xs text-slate-400">Skor: <span id="current-score" class="font-bold text-emerald-400">0</span></div>
+                <div class="h-4 w-px bg-slate-700"></div>
+                <div class="text-xs text-amber-400 font-semibold flex items-center space-x-1">
+                    <svg class="w-4 h-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                    <span id="violation-count">Peringatan: 0</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="flex-1 max-w-5xl w-full mx-auto p-4 sm:p-6 flex flex-col justify-center items-center my-auto">
+
+        <!-- 1. REGISTRATION / WELCOME SCREEN -->
+        <div id="screen-welcome" class="w-full bg-slate-800/90 border border-slate-700/80 rounded-3xl p-6 sm:p-10 shadow-2xl backdrop-blur-xl relative overflow-hidden">
+            <div class="absolute -right-12 -top-12 w-48 h-48 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute -left-12 -bottom-12 w-48 h-48 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+            <div class="text-center max-w-xl mx-auto space-y-4 mb-8">
+                <span class="inline-block bg-indigo-500/20 text-indigo-300 px-3.5 py-1.5 rounded-full text-xs font-semibold tracking-wider uppercase border border-indigo-500/30">Mode Ujian Terkunci (Secure Exam)</span>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">Siap Uji Kompetensi Akuntansi?</h2>
+                <p class="text-slate-300 text-sm sm:text-base leading-relaxed">
+                    Selesaikan 20 soal jurnal penyesuaian perusahaan dagang dengan benar. Sistem menerapkan <strong class="text-amber-300">Penguncian Layar & Deteksi Anti-Curang</strong>. Jika Anda meninggalkan halaman ujian (pindah tab/minimize), alarm peringatan akan berbunyi dan pelanggaran akan dicatat!
+                </p>
+            </div>
+
+            <form id="form-register" class="max-w-md mx-auto space-y-4 bg-slate-900/60 p-6 rounded-2xl border border-slate-800 shadow-inner">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1.5 uppercase tracking-wider">Nama Lengkap Siswa</label>
+                    <input type="text" id="input-name" required placeholder="Contoh: Siti Rahmawati" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm font-medium">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1.5 uppercase tracking-wider">Kelas</label>
+                        <input type="text" id="input-class" required placeholder="Contoh: XI Akuntansi 1" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm font-medium">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1.5 uppercase tracking-wider">No. Absen</label>
+                        <input type="number" id="input-number" required placeholder="Contoh: 18" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm font-medium">
+                    </div>
+                </div>
+                <button type="submit" class="w-full mt-2 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white font-bold py-3.5 px-6 rounded-xl shadow-lg shadow-indigo-600/30 transition-all duration-200 transform hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center space-x-2">
+                    <span>Mulai Quiz Show & Kunci Layar</span>
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                </button>
+            </form>
+        </div>
+
+        <!-- 2. QUIZ SCREEN (HIDDEN INITIALLY) -->
+        <div id="screen-quiz" class="w-full hidden space-y-6">
+            <!-- Question Card -->
+            <div class="bg-slate-800/90 border border-slate-700/80 rounded-3xl p-6 sm:p-8 shadow-xl backdrop-blur-xl relative">
+                <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+                    <span id="badge-question-no" class="bg-indigo-500/20 text-indigo-300 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide border border-indigo-500/30">Soal 1 dari 20</span>
+                    <span class="text-xs text-slate-400 bg-slate-900/60 px-3 py-1 rounded-full border border-slate-700">Tanggal: 31 Desember 2025</span>
+                </div>
+                
+                <h3 id="question-text" class="text-lg sm:text-xl font-bold text-white mb-6 leading-snug">
+                    Memuat pertanyaan...
+                </h3>
+
+                <!-- Answer Form Grid -->
+                <div class="space-y-4 bg-slate-900/70 p-5 rounded-2xl border border-slate-700/60">
+                    <div class="text-xs font-bold text-indigo-300 uppercase tracking-wider mb-2">Formulasi Jurnal Penyesuaian</div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Debit Account -->
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1">Akun Debit (DEBIT)</label>
+                            <select id="select-debit" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white text-sm font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                <option value="">-- Pilih Akun Debit --</option>
+                            </select>
+                        </div>
+                        <!-- Credit Account -->
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1">Akun Kredit (KREDIT)</label>
+                            <select id="select-credit" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white text-sm font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                <option value="">-- Pilih Akun Kredit --</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Jumlah Nominal (Rp)</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400 text-sm font-bold">Rp</span>
+                            <input type="text" id="input-nominal" placeholder="Contoh: 3.300.000 atau 3300000" class="w-full bg-slate-800 border border-slate-700 rounded-xl pl-11 pr-4 py-2.5 text-white text-sm font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        </div>
+                        <p class="text-[11px] text-slate-400 mt-1">Masukkan angka nominal saja atau dengan titik pemisah ribuan.</p>
+                    </div>
+
+                    <div id="feedback-box" class="hidden p-4 rounded-xl text-sm font-medium transition-all"></div>
+                </div>
+
+                <!-- Navigation Buttons -->
+                <div class="flex items-center justify-between mt-6 pt-4 border-t border-slate-700/50">
+                    <button id="btn-submit-answer" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 px-6 rounded-xl shadow-lg shadow-emerald-600/20 transition-all flex items-center space-x-2">
+                        <span>Periksa Jawaban</span>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                    </button>
+                    <button id="btn-next-question" class="hidden bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2.5 px-6 rounded-xl shadow-lg shadow-indigo-600/20 transition-all flex items-center space-x-2">
+                        <span id="btn-next-text">Soal Berikutnya</span>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. RESULT SCREEN (HIDDEN INITIALLY) -->
+        <div id="screen-result" class="w-full hidden space-y-6">
+            <div class="bg-slate-800/90 border border-slate-700/80 rounded-3xl p-6 sm:p-10 shadow-2xl backdrop-blur-xl text-center space-y-6">
+                <div class="w-20 h-20 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center mx-auto border border-emerald-500/30 text-3xl font-extrabold shadow-inner">
+                    🎉
+                </div>
+                <div>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-white">Quiz Selesai!</h2>
+                    <p class="text-slate-300 text-sm mt-1">Laporan hasil evaluasi jurnal penyesuaian perusahaan dagang.</p>
+                </div>
+
+                <!-- Score Card Grid -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-2xl mx-auto text-left">
+                    <div class="bg-slate-900/60 p-4 rounded-2xl border border-slate-700/60">
+                        <div class="text-xs text-slate-400 font-semibold uppercase">Nama Siswa</div>
+                        <div id="res-name" class="text-lg font-bold text-white mt-1 truncate">-</div>
+                    </div>
+                    <div class="bg-slate-900/60 p-4 rounded-2xl border border-slate-700/60">
+                        <div class="text-xs text-slate-400 font-semibold uppercase">Kelas / Absen</div>
+                        <div id="res-class" class="text-lg font-bold text-white mt-1 truncate">-</div>
+                    </div>
+                    <div class="bg-slate-900/60 p-4 rounded-2xl border border-slate-700/60">
+                        <div class="text-xs text-slate-400 font-semibold uppercase">Total Skor Akhir</div>
+                        <div id="res-score" class="text-2xl font-extrabold text-emerald-400 mt-1">0 / 100</div>
+                    </div>
+                </div>
+
+                <!-- Violation Summary -->
+                <div id="res-violation-box" class="max-w-2xl mx-auto p-4 rounded-xl text-xs font-medium bg-slate-900/80 border border-slate-700 text-slate-300 text-left">
+                    Peringatan Keluar Halaman: <span id="res-violation-count" class="font-bold text-white">0</span> kali
+                </div>
+
+                <!-- Detailed Breakdown Table Container -->
+                <div class="max-w-4xl mx-auto overflow-x-auto text-left bg-slate-900/70 rounded-2xl border border-slate-700/60 p-4 max-h-80 overflow-y-auto">
+                    <h4 class="text-xs font-bold text-indigo-300 uppercase tracking-wider mb-3 sticky top-0 bg-slate-900/90 py-1">Rincian Jawaban per Soal</h4>
+                    <table class="w-full text-xs text-slate-300">
+                        <thead>
+                            <tr class="border-b border-slate-700 text-slate-400">
+                                <th class="pb-2 text-left">No</th>
+                                <th class="pb-2 text-left">Debit Dijawab vs Kunci</th>
+                                <th class="pb-2 text-left">Kredit Dijawab vs Kunci</th>
+                                <th class="pb-2 text-right">Nominal</th>
+                                <th class="pb-2 text-center">Poin</th>
+                            </tr>
+                        </thead>
+                        <tbody id="detailed-results-tbody" class="divide-y divide-slate-800">
+                            <!-- Populated via JS -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex flex-wrap items-center justify-center gap-4 pt-2">
+                    <button id="btn-download-report" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 px-6 rounded-xl shadow-lg shadow-indigo-600/30 transition-all flex items-center space-x-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                        <span>Unduh Laporan Nilai (HTML/TXT)</span>
+                    </button>
+                    <button id="btn-restart" class="bg-slate-700 hover:bg-slate-600 text-white font-bold py-3 px-6 rounded-xl transition-all">
+                        Ulangi Quiz
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- ANTI-CHEAT MODAL WARNING OVERLAY -->
+    <div id="modal-warning" class="fixed inset-0 bg-slate-950/90 backdrop-blur-xl z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-slate-900 border-2 border-amber-500/80 rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl text-center space-y-4 animate-pulse-slow">
+            <div class="w-16 h-16 bg-amber-500/20 text-amber-400 rounded-full flex items-center justify-center mx-auto border border-amber-500/40 text-2xl font-bold">
+                ⚠️
+            </div>
+            <h3 class="text-xl font-extrabold text-white">PERINGATAN UJIAN KETAT!</h3>
+            <p id="warning-msg-text" class="text-sm text-slate-300 leading-relaxed">
+                Anda terdeteksi meninggalkan halaman pengerjaan ujian (berpindah tab, minimize, atau keluar dari layar penuh). Tindakan ini dilarang keras dan dicatat sebagai pelanggaran!
+            </p>
+            <button id="btn-dismiss-warning" class="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold py-3 px-6 rounded-xl shadow-lg transition-all">
+                Saya Mengerti & Kembali ke Ujian
+            </button>
+        </div>
+    </div>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        // List of all account options commonly used in adjustments
+        const ACCOUNT_LIST = [
+            "Beban Perlengkapan Kantor",
+            "Perlengkapan Kantor",
+            "Beban Perlengkapan Toko",
+            "Perlengkapan Toko",
+            "Beban Penyusutan Peralatan Toko",
+            "Akumulasi Penyusutan Peralatan Toko",
+            "Beban Penyusutan Kendaraan",
+            "Akumulasi Penyusutan Kendaraan",
+            "Beban Penyusutan Gedung",
+            "Akumulasi Penyusutan Gedung",
+            "Beban Penyusutan Peralatan Kantor",
+            "Akumulasi Penyusutan Peralatan Kantor",
+            "Beban Asuransi",
+            "Asuransi Dibayar di Muka",
+            "Beban Sewa",
+            "Sewa Dibayar di Muka",
+            "Pendapatan Sewa",
+            "Pendapatan Diterima di Muka",
+            "Beban Gaji",
+            "Utang Gaji",
+            "Beban Listrik",
+            "Utang Listrik",
+            "Beban Air",
+            "Utang Air",
+            "Piutang Bunga",
+            "Pendapatan Bunga",
+            "Beban Bunga",
+            "Utang Bunga",
+            "Beban Kerugian Piutang",
+            "Cadangan Kerugian Piutang",
+            "Ikhtisar Laba Rugi",
+            "Persediaan Barang Dagang",
+            "Harga Pokok Penjualan"
+        ];
+
+        // 20 Questions Data based on the provided document and answer key
+        const QUESTIONS = [
+            {
+                id: 1,
+                text: "Pada neraca saldo per 31 Desember 2025, akun Perlengkapan Kantor bersaldo Rp4.500.000. Berdasarkan hasil inventarisasi, perlengkapan kantor yang masih tersisa pada akhir periode senilai Rp1.200.000. Buatlah jurnal penyesuaiannya.",
+                debit: "Beban Perlengkapan Kantor",
+                credit: "Perlengkapan Kantor",
+                nominal: 3300000,
+                calculation: "4.500.000 − 1.200.000 = 3.300.000"
+            },
+            {
+                id: 2,
+                text: "Akun Perlengkapan Toko pada neraca saldo bersaldo Rp2.750.000. Pada akhir periode, sisa perlengkapan toko yang masih ada adalah Rp850.000. Buatlah jurnal penyesuaiannya.",
+                debit: "Beban Perlengkapan Toko",
+                credit: "Perlengkapan Toko",
+                nominal: 1900000,
+                calculation: "2.750.000 − 850.000 = 1.900.000"
+            },
+            {
+                id: 3,
+                text: "UD Maju Jaya memiliki Peralatan Toko dengan harga perolehan Rp24.000.000. Peralatan tersebut diperkirakan berumur ekonomis 8 tahun tanpa nilai residu dan disusutkan dengan metode garis lurus. Buatlah jurnal penyesuaian penyusutan untuk tahun 2025.",
+                debit: "Beban Penyusutan Peralatan Toko",
+                credit: "Akumulasi Penyusutan Peralatan Toko",
+                nominal: 3000000,
+                calculation: "24.000.000 ÷ 8 = 3.000.000"
+            },
+            {
+                id: 4,
+                text: "Sebuah kendaraan pengangkut barang dagang dibeli dengan harga perolehan Rp180.000.000. Umur ekonomis diperkirakan 5 tahun dengan nilai residu Rp20.000.000. Metode penyusutan yang digunakan adalah garis lurus. Buatlah jurnal penyesuaian penyusutan kendaraan untuk satu tahun.",
+                debit: "Beban Penyusutan Kendaraan",
+                credit: "Akumulasi Penyusutan Kendaraan",
+                nominal: 32000000,
+                calculation: "(180.000.000 − 20.000.000) ÷ 5 = 32.000.000"
+            },
+            {
+                id: 5,
+                text: "Gedung toko dibeli dengan harga perolehan Rp600.000.000. Umur ekonomis gedung 20 tahun dan nilai residu ditaksir 10% dari harga perolehan. Metode penyusutan garis lurus. Buatlah jurnal penyesuaian penyusutan gedung untuk tahun 2025.",
+                debit: "Beban Penyusutan Gedung",
+                credit: "Akumulasi Penyusutan Gedung",
+                nominal: 27000000,
+                calculation: "Residu = 10% × 600.000.000 = 60.000.000; (600.000.000 − 60.000.000) ÷ 20 = 27.000.000"
+            },
+            {
+                id: 6,
+                text: "Pada tanggal 1 April 2025, perusahaan membeli Peralatan Kantor seharga Rp15.000.000. Umur ekonomis 5 tahun dengan nilai residu Rp1.500.000, metode garis lurus. Buatlah jurnal penyesuaian penyusutan peralatan kantor per 31 Desember 2025.",
+                debit: "Beban Penyusutan Peralatan Kantor",
+                credit: "Akumulasi Penyusutan Peralatan Kantor",
+                nominal: 2025000,
+                calculation: "(15.000.000 − 1.500.000) ÷ 5 = 2.700.000; 2.700.000 × 9/12 = 2.025.000"
+            },
+            {
+                id: 7,
+                text: "Pada tanggal 1 Oktober 2025, perusahaan membayar premi asuransi untuk jangka waktu 1 tahun sebesar Rp7.200.000 dan dicatat pada akun Asuransi Dibayar di Muka. Buatlah jurnal penyesuaian per 31 Desember 2025.",
+                debit: "Beban Asuransi",
+                credit: "Asuransi Dibayar di Muka",
+                nominal: 1800000,
+                calculation: "7.200.000 ÷ 12 × 3 bulan = 1.800.000"
+            },
+            {
+                id: 8,
+                text: "Pada tanggal 1 Juli 2025, perusahaan membayar tunai sewa ruko untuk 2 tahun sebesar Rp48.000.000 dan dicatat pada akun Sewa Dibayar di Muka. Buatlah jurnal penyesuaian per 31 Desember 2025.",
+                debit: "Beban Sewa",
+                credit: "Sewa Dibayar di Muka",
+                nominal: 12000000,
+                calculation: "48.000.000 ÷ 24 = 2.000.000/bulan; 2.000.000 × 6 bulan = 12.000.000"
+            },
+            {
+                id: 9,
+                text: "Pada tanggal 1 Mei 2025, perusahaan membayar premi asuransi 1 tahun sebesar Rp9.600.000 dan seluruhnya dicatat pada akun Beban Asuransi. Buatlah jurnal penyesuaian per 31 Desember 2025 untuk memisahkan bagian yang belum menjadi beban.",
+                debit: "Asuransi Dibayar di Muka",
+                credit: "Beban Asuransi",
+                nominal: 3200000,
+                calculation: "9.600.000 ÷ 12 = 800.000/bulan; sisa 4 bulan (Jan–Apr 2026): 800.000 × 4 = 3.200.000"
+            },
+            {
+                id: 10,
+                text: "Pada tanggal 1 September 2025, perusahaan menerima pembayaran sewa ruang untuk 1 tahun sebesar Rp12.000.000 dan seluruhnya dicatat pada akun Pendapatan Sewa. Buatlah jurnal penyesuaian per 31 Desember 2025.",
+                debit: "Pendapatan Sewa",
+                credit: "Pendapatan Diterima di Muka",
+                nominal: 8000000,
+                calculation: "12.000.000 ÷ 12 = 1.000.000/bulan; sisa 8 bulan (Jan–Agu 2026): 1.000.000 × 8 = 8.000.000"
+            },
+            {
+                id: 11,
+                text: "Pada tanggal 1 November 2025, perusahaan menerima uang sewa kios untuk 6 bulan sebesar Rp3.600.000 dan dicatat pada akun Pendapatan Diterima di Muka. Buatlah jurnal penyesuaian per 31 Desember 2025.",
+                debit: "Pendapatan Diterima di Muka",
+                credit: "Pendapatan Sewa",
+                nominal: 1200000,
+                calculation: "3.600.000 ÷ 6 = 600.000/bulan; 600.000 × 2 bulan (Nov–Des) = 1.200.000"
+            },
+            {
+                id: 12,
+                text: "Gaji pegawai dibayar setiap hari Sabtu untuk 6 hari kerja (Senin–Sabtu) sebesar Rp6.000.000 per minggu. Tanggal 31 Desember 2025 jatuh pada hari Rabu, dan gaji terakhir telah dibayar Sabtu, 27 Desember 2025. Buatlah jurnal penyesuaian untuk gaji yang belum dibayar.",
+                debit: "Beban Gaji",
+                credit: "Utang Gaji",
+                nominal: 3000000,
+                calculation: "6.000.000 ÷ 6 = 1.000.000/hari; 3 hari (Senin 29 s.d. Rabu 31 Des) = 3.000.000"
+            },
+            {
+                id: 13,
+                text: "Hingga 31 Desember 2025 terdapat tagihan yang belum dicatat dan belum dibayar: (a) tagihan listrik Rp1.850.000 dan (b) tagihan air Rp425.000. (Pilih salah satu akun atau gabungan beban utama, untuk quiz ini uji Beban Listrik / Utang Listrik).",
+                debit: "Beban Listrik",
+                credit: "Utang Listrik",
+                nominal: 1850000,
+                calculation: "Tagihan listrik Desember: Beban Listrik pada Utang Listrik Rp1.850.000"
+            },
+            {
+                id: 14,
+                text: "Pada tanggal 1 Oktober 2025, perusahaan menempatkan Deposito Rp50.000.000 dengan bunga 6% per tahun. Bunga diterima saat jatuh tempo. Buatlah jurnal penyesuaian per 31 Desember 2025 untuk bunga yang sudah menjadi hak perusahaan.",
+                debit: "Piutang Bunga",
+                credit: "Pendapatan Bunga",
+                nominal: 750000,
+                calculation: "50.000.000 × 6% × 3/12 = 750.000"
+            },
+            {
+                id: 15,
+                text: "Perusahaan memiliki Utang Bank Rp80.000.000 dengan bunga 12% per tahun. Bunga dibayar tiap 6 bulan (1 Februari & 1 Agustus). Bunga terakhir dibayar 1 Agustus 2025. Buatlah jurnal penyesuaian per 31 Desember 2025.",
+                debit: "Beban Bunga",
+                credit: "Utang Bunga",
+                nominal: 4000000,
+                calculation: "80.000.000 × 12% × 5/12 (Agustus–Desember) = 4.000.000"
+            },
+            {
+                id: 16,
+                text: "Pada neraca saldo per 31 Desember 2025, Piutang Usaha tercatat Rp75.000.000 dan Cadangan Kerugian Piutang bersaldo kredit Rp500.000. Perusahaan menaksir piutang tak tertagih 2% dari saldo Piutang Usaha. Buatlah jurnal penyesuaiannya.",
+                debit: "Beban Kerugian Piutang",
+                credit: "Cadangan Kerugian Piutang",
+                nominal: 1000000,
+                calculation: "2% × 75.000.000 = 1.500.000; 1.500.000 − saldo kredit 500.000 = 1.000.000"
+            },
+            {
+                id: 17,
+                text: "Selama tahun 2025, penjualan kredit perusahaan sebesar Rp240.000.000. Perusahaan menaksir piutang tak tertagih 1,5% dari penjualan kredit. Akun Cadangan Kerugian Piutang belum memiliki saldo. Buatlah jurnal penyesuaiannya.",
+                debit: "Beban Kerugian Piutang",
+                credit: "Cadangan Kerugian Piutang",
+                nominal: 3600000,
+                calculation: "1,5% × 240.000.000 = 3.600.000"
+            },
+            {
+                id: 18,
+                text: "Metode periodik & pendekatan ikhtisar laba rugi. Persediaan awal (1 Jan 2025) Rp35.000.000, sedangkan persediaan akhir (31 Des 2025) berdasarkan stock opname Rp42.000.000. (Uji pencatatan pemindahan persediaan awal ke Ikhtisar Laba Rugi).",
+                debit: "Ikhtisar Laba Rugi",
+                credit: "Persediaan Barang Dagang",
+                nominal: 35000000,
+                calculation: "Memindahkan persediaan awal: Ikhtisar Laba Rugi (D) pada Persediaan Barang Dagang (K) Rp35.000.000"
+            },
+            {
+                id: 19,
+                text: "Metode perpetual. Saldo Persediaan Barang Dagang menurut catatan per 31 Desember 2025 sebesar Rp58.000.000, sedangkan stock opname menunjukkan nilai Rp56.500.000. Buatlah jurnal penyesuaian untuk selisih tersebut.",
+                debit: "Harga Pokok Penjualan",
+                credit: "Persediaan Barang Dagang",
+                nominal: 1500000,
+                calculation: "58.000.000 − 56.500.000 (persediaan kurang) = 1.500.000"
+            },
+            {
+                id: 20,
+                text: "(Gabungan PD Sinar Jaya) Saldo Perlengkapan Toko pada neraca saldo Rp5.200.000, sedangkan sisa perlengkapan toko pada akhir periode Rp1.700.000. Buatlah jurnal penyesuaiannya.",
+                debit: "Beban Perlengkapan Toko",
+                credit: "Perlengkapan Toko",
+                nominal: 3500000,
+                calculation: "5.200.000 − 1.700.000 = 3.500.000"
+            }
+        ];
+
+        // State variables
+        let studentData = { name: '', className: '', number: '' };
+        let currentQuestionIndex = 0;
+        let userAnswers = {};
+        let violationCount = 0;
+        let examActive = false;
+        let audioCtx = null;
+
+        // DOM Elements
+        const screenWelcome = document.getElementById('screen-welcome');
+        const screenQuiz = document.getElementById('screen-quiz');
+        const screenResult = document.getElementById('screen-result');
+        const formRegister = document.getElementById('form-register');
+        const headerStats = document.getElementById('header-stats');
+        const currentQNum = document.getElementById('current-q-num');
+        const currentScoreEl = document.getElementById('current-score');
+        const violationCountEl = document.getElementById('violation-count');
+        const questionText = document.getElementById('question-text');
+        const badgeQuestionNo = document.getElementById('badge-question-no');
+        const selectDebit = document.getElementById('select-debit');
+        const selectCredit = document.getElementById('select-credit');
+        const inputNominal = document.getElementById('input-nominal');
+        const feedbackBox = document.getElementById('feedback-box');
+        const btnSubmitAnswer = document.getElementById('btn-submit-answer');
+        const btnNextQuestion = document.getElementById('btn-next-question');
+        const btnNextText = document.getElementById('btn-next-text');
+        const modalWarning = document.getElementById('modal-warning');
+        const btnDismissWarning = document.getElementById('btn-dismiss-warning');
+
+        // Populate dropdown options
+        function initDropdowns() {
+            ACCOUNT_LIST.forEach(acc => {
+                let opt1 = document.createElement('option');
+                opt1.value = acc;
+                opt1.textContent = acc;
+                selectDebit.appendChild(opt1);
+
+                let opt2 = document.createElement('option');
+                opt2.value = acc;
+                opt2.textContent = acc;
+                selectCredit.appendChild(opt2);
+            });
+        }
+        initDropdowns();
+
+        // Web Audio API Alarm Sound Generator
+        function playAlarmSound() {
+            try {
+                if (!audioCtx) {
+                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+                // Play a pulsing warning beep
+                for (let i = 0; i < 3; i++) {
+                    setTimeout(() => {
+                        if (!audioCtx) return;
+                        let osc = audioCtx.createOscillator();
+                        let gain = audioCtx.createGain();
+                        osc.type = 'sawtooth';
+                        osc.frequency.setValueAtTime(600 + i * 150, audioCtx.currentTime);
+                        gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+                        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+                        osc.connect(gain);
+                        gain.connect(audioCtx.destination);
+                        osc.start();
+                        osc.stop(audioCtx.currentTime + 0.3);
+                    }, i * 350);
+                }
+            } catch (e) {
+                console.log("Audio not allowed yet", e);
+            }
+        }
+
+        // Anti-Cheat Event Listeners (Fullscreen & Visibility)
+        function triggerViolation(reason) {
+            if (!examActive) return;
+            violationCount++;
+            violationCountEl.textContent = `Peringatan: ${violationCount}`;
+            playAlarmSound();
+            modalWarning.classList.remove('hidden');
+        }
+
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                triggerViolation('Pindah Tab / Minimize');
+            }
+        });
+
+        window.addEventListener('blur', () => {
+            triggerViolation('Kehilangan Fokus Jendela');
+        });
+
+        btnDismissWarning.addEventListener('click', () => {
+            modalWarning.classList.add('hidden');
+            // Try to request fullscreen again if possible
+            try {
+                if (!document.fullscreenElement) {
+                    document.documentElement.requestFullscreen().catch(() => {});
+                }
+            } catch(e){}
+        });
+
+        // Register form handler
+        formRegister.addEventListener('submit', (e) => {
+            e.preventDefault();
+            studentData.name = document.getElementById('input-name').value.trim();
+            studentData.className = document.getElementById('input-class').value.trim();
+            studentData.number = document.getElementById('input-number').value.trim();
+
+            if (!studentData.name || !studentData.className || !studentData.number) return;
+
+            // Request Fullscreen
+            try {
+                document.documentElement.requestFullscreen().catch(() => {});
+            } catch(e){}
+
+            screenWelcome.classList.add('hidden');
+            screenQuiz.classList.remove('hidden');
+            headerStats.classList.remove('hidden');
+            headerStats.classList.add('flex');
+            examActive = true;
+
+            loadQuestion(0);
+        });
+
+        // Load Question
+        function loadQuestion(index) {
+            currentQuestionIndex = index;
+            const q = QUESTIONS[index];
+            currentQNum.textContent = index + 1;
+            badgeQuestionNo.textContent = `Soal ${index + 1} dari 20`;
+            questionText.textContent = q.text;
+
+            // Reset inputs
+            selectDebit.value = "";
+            selectCredit.value = "";
+            inputNominal.value = "";
+            selectDebit.disabled = false;
+            selectCredit.disabled = false;
+            inputNominal.disabled = false;
+
+            feedbackBox.classList.add('hidden');
+            feedbackBox.className = "hidden p-4 rounded-xl text-sm font-medium transition-all";
+            btnSubmitAnswer.classList.remove('hidden');
+            btnNextQuestion.classList.add('hidden');
+        }
+
+        // Submit Answer Handler
+        btnSubmitAnswer.addEventListener('click', () => {
+            const q = QUESTIONS[currentQuestionIndex];
+            const userDebit = selectDebit.value;
+            const userCredit = selectCredit.value;
+            const rawNominal = inputNominal.value.replace(/[^0-9]/g, '');
+            const userNominal = parseInt(rawNominal) || 0;
+
+            if (!userDebit || !userCredit || !rawNominal) {
+                alert("Harap lengkapi Akun Debit, Akun Kredit, dan Nominal terlebih dahulu!");
+                return;
+            }
+
+            // Scoring Rubric: Debit correct = 2 pts, Credit correct = 2 pts, Nominal correct = 1 pt (Total 5 pts)
+            let debitCorrect = (userDebit === q.debit);
+            let creditCorrect = (userCredit === q.credit);
+            let nominalCorrect = (userNominal === q.nominal);
+
+            let earnedPoints = 0;
+            if (debitCorrect) earnedPoints += 2;
+            if (creditCorrect) earnedPoints += 2;
+            if (nominalCorrect) earnedPoints += 1;
+
+            // Save user answer
+            userAnswers[currentQuestionIndex] = {
+                userDebit,
+                userCredit,
+                userNominal,
+                debitCorrect,
+                creditCorrect,
+                nominalCorrect,
+                earnedPoints,
+                correctDebit: q.debit,
+                correctCredit: q.credit,
+                correctNominal: q.nominal,
+                calculation: q.calculation
+            };
+
+            // Update live score display
+            let totalScoreSoFar = Object.values(userAnswers).reduce((acc, curr) => acc + curr.earnedPoints, 0);
+            currentScoreEl.textContent = totalScoreSoFar;
+
+            // Show feedback
+            selectDebit.disabled = true;
+            selectCredit.disabled = true;
+            inputNominal.disabled = true;
+            btnSubmitAnswer.classList.add('hidden');
+            btnNextQuestion.classList.remove('hidden');
+
+            if (earnedPoints === 5) {
+                feedbackBox.className = "p-4 rounded-xl text-sm font-medium bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 block";
+                feedbackBox.innerHTML = `<strong>Luar Biasa! (Skor 5/5)</strong><br>Jawaban Anda sepenuhnya tepat.<br><em>Perhitungan:</em> ${q.calculation}`;
+            } else {
+                feedbackBox.className = "p-4 rounded-xl text-sm font-medium bg-amber-500/20 border border-amber-500/40 text-amber-300 block";
+                feedbackBox.innerHTML = `<strong>Kurang Tepat (Skor ${earnedPoints}/5)</strong><br>` +
+                    `Debit: ${debitCorrect ? '✔ Benar' : '❌ Salah (Kunci: ' + q.debit + ')'}<br>` +
+                    `Kredit: ${creditCorrect ? '✔ Benar' : '❌ Salah (Kunci: ' + q.credit + ')'}<br>` +
+                    `Nominal: ${nominalCorrect ? '✔ Benar' : '❌ Salah (Kunci: Rp ' + q.correctNominal.toLocaleString('id-ID') + ')'}<br>` +
+                    `<em>Perhitungan:</em> ${q.calculation}`;
+            }
+
+            if (currentQuestionIndex === QUESTIONS.length - 1) {
+                btnNextText.textContent = "Lihat Skor Akhir";
+            } else {
+                btnNextText.textContent = "Soal Berikutnya";
+            }
+        });
+
+        // Next Question / Finish Handler
+        btnNextQuestion.addEventListener('click', () => {
+            if (currentQuestionIndex < QUESTIONS.length - 1) {
+                loadQuestion(currentQuestionIndex + 1);
+            } else {
+                showResultScreen();
+            }
+        });
+
+        // Show Result Screen
+        function showResultScreen() {
+            screenQuiz.classList.add('hidden');
+            headerStats.classList.add('hidden');
+            screenResult.classList.remove('hidden');
+
+            document.getElementById('res-name').textContent = studentData.name;
+            document.getElementById('res-class').textContent = `${studentData.className} (No. ${studentData.number})`;
+            
+            let finalScore = Object.values(userAnswers).reduce((acc, curr) => acc + curr.earnedPoints, 0);
+            document.getElementById('res-score').textContent = `${finalScore} / 100`;
+            document.getElementById('res-violation-count').textContent = violationCount;
+
+            // Populate detailed table
+            const tbody = document.getElementById('detailed-results-tbody');
+            tbody.innerHTML = '';
+
+            QUESTIONS.forEach((q, idx) => {
+                let ans = userAnswers[idx] || { userDebit: '-', userCredit: '-', userNominal: 0, earnedPoints: 0, correctDebit: q.debit, correctCredit: q.credit, correctNominal: q.nominal };
+                let tr = document.createElement('tr');
+                tr.className = "border-b border-slate-800 hover:bg-slate-800/50";
+                tr.innerHTML = `
+                    <td class="py-3 font-bold text-white">${idx + 1}</td>
+                    <td class="py-3">
+                        <div class="${ans.debitCorrect ? 'text-emerald-400 font-semibold' : 'text-red-400'}">D: ${ans.userDebit}</div>
+                        ${!ans.debitCorrect ? '<div class="text-[10px] text-slate-400">Kunci: ' + ans.correctDebit + '</div>' : ''}
+                    </td>
+                    <td class="py-3">
+                        <div class="${ans.creditCorrect ? 'text-emerald-400 font-semibold' : 'text-red-400'}">K: ${ans.userCredit}</div>
+                        ${!ans.creditCorrect ? '<div class="text-[10px] text-slate-400">Kunci: ' + ans.correctCredit + '</div>' : ''}
+                    </td>
+                    <td class="py-3 text-right">
+                        <div class="${ans.nominalCorrect ? 'text-emerald-400 font-semibold' : 'text-red-400'}">Rp ${Number(ans.userNominal).toLocaleString('id-ID')}</div>
+                        ${!ans.nominalCorrect ? '<div class="text-[10px] text-slate-400">Kunci: Rp ' + ans.correctNominal.toLocaleString('id-ID') + '</div>' : ''}
+                    </td>
+                    <td class="py-3 text-center font-bold ${ans.earnedPoints === 5 ? 'text-emerald-400' : ans.earnedPoints > 0 ? 'text-amber-400' : 'text-red-400'}">
+                        ${ans.earnedPoints}/5
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Download Report Button Handler
+        document.getElementById('btn-download-report').addEventListener('click', () => {
+            let finalScore = Object.values(userAnswers).reduce((acc, curr) => acc + curr.earnedPoints, 0);
+            let reportHTML = `
+            <!DOCTYPE html>
+            <html lang="id">
+            <head>
+                <meta charset="UTF-8">
+                <title>Laporan Nilai Quiz - ${studentData.name}</title>
+                <style>
+                    body { font-family: Arial, sans-serif; margin: 30px; color: #333; }
+                    h2, h3 { color: #1e1b4b; }
+                    .header { border-bottom: 2px solid #4f46e5; padding-bottom: 15px; margin-bottom: 20px; }
+                    table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 12px; }
+                    th, td { border: 1px solid #cbd5e1; padding: 8px; text-align: left; }
+                    th { background-color: #f1f5f9; }
+                    .badge { font-weight: bold; padding: 3px 6px; border-radius: 4px; }
+                    .success { color: #059669; }
+                    .danger { color: #dc2626; }
+                </style>
+            </head>
+            <body>
+                <div class="header">
+                    <h2>LAPORAN HASIL EVALUASI JURNAL PENYESUAIAN</h2>
+                    <p><strong>Mata Pelajaran:</strong> Akuntansi Keuangan / Perusahaan Dagang (Kelas 11 SMK)</p>
+                </div>
+                <div>
+                    <p><strong>Nama Siswa:</strong> ${studentData.name}</p>
+                    <p><strong>Kelas / No. Absen:</strong> ${studentData.className} / ${studentData.number}</p>
+                    <p><strong>Total Skor Akhir:</strong> <span style="font-size: 18px; color: #059669; font-weight: bold;">${finalScore} / 100</span></p>
+                    <p><strong>Total Pelanggaran Keluar Layar:</strong> ${violationCount} kali</p>
+                </div>
+                <h3>Rincian Jawaban Soal:</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Soal</th>
+                            <th>Jawaban Debit (Siswa vs Kunci)</th>
+                            <th>Jawaban Kredit (Siswa vs Kunci)</th>
+                            <th>Nominal (Siswa vs Kunci)</th>
+                            <th>Poin</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            QUESTIONS.forEach((q, idx) => {
+                let ans = userAnswers[idx] || { userDebit: '-', userCredit: '-', userNominal: 0, earnedPoints: 0, correctDebit: q.debit, correctCredit: q.credit, correctNominal: q.nominal };
+                reportHTML += `
+                    <tr>
+                        <td>${idx + 1}</td>
+                        <td>${q.text.substring(0, 60)}...</td>
+                        <td>
+                            <span class="${ans.debitCorrect ? 'success' : 'danger'}">${ans.userDebit}</span><br>
+                            <small style="color: #64748b;">Kunci: ${ans.correctDebit}</small>
+                        </td>
+                        <td>
+                            <span class="${ans.creditCorrect ? 'success' : 'danger'}">${ans.userCredit}</span><br>
+                            <small style="color: #64748b;">Kunci: ${ans.correctCredit}</small>
+                        </td>
+                        <td>
+                            <span class="${ans.nominalCorrect ? 'success' : 'danger'}">Rp ${Number(ans.userNominal).toLocaleString('id-ID')}</span><br>
+                            <small style="color: #64748b;">Kunci: Rp ${Number(ans.correctNominal).toLocaleString('id-ID')}</small>
+                        </td>
+                        <td style="text-align: center; font-weight: bold;">${ans.earnedPoints}/5</td>
+                    </tr>
+                `;
+            });
+
+            reportHTML += `
+                    </tbody>
+                </table>
+                <br><p style="font-size: 10px; color: #64748b;">Dicetak secara otomatis melalui sistem Quiz Show Akuntansi Perusahaan Dagang SMK.</p>
+            </body>
+            </html>
+            `;
+
+            let blob = new Blob([reportHTML], { type: 'text/html' });
+            let url = URL.createObjectURL(blob);
+            let a = document.createElement('a');
+            a.href = url;
+            a.download = `Laporan_Nilai_Jurnal_Penyesuaian_${studentData.name.replace(/\s+/g, '_')}.html`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        });
+
+        // Restart Quiz
+        document.getElementById('btn-restart').addEventListener('click', () => {
+            window.location.reload();
+        });
+    </script>
+</body>
+</html>
